@@ -52,7 +52,7 @@ class SendEmail {
 
   // send user welcome message
   async sendWelcome() {
-     await this.send('welcome', 'Welcome to Domain.com');
+     await this.send('welcome', 'Welcome to Domain.com')
   }
 
    // send reset password message
