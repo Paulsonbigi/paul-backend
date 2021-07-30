@@ -48,10 +48,13 @@ exports.register = async (req, res, next) => {
         })
 
         // send user a confirmation email
-        await new sendEmail(user, url).sendWelcome()
-
-        sendToken(user, res, 200);
-        next(new AppError(err.message, 404))
+        try{
+          await new sendEmail(user, url).sendWelcome()
+      
+          sendToken(user, res, 200);
+        }catch(err){
+          next(new AppError(err.message, 404))
+        }
 }
 
 // @Route POST A USER
@@ -73,9 +76,12 @@ exports.login = catchAsync(async (req, res, next) => {
 
     let url = `https//localhost:8080/api/v1/`
 
-    await new sendEmail(user, url).sendWelcome()
+    try{
   
-    sendToken(user, res, 200);
+      sendToken(user, res, 200);
+    }catch(err){
+      next(new AppError(err.message, 404))
+    }
     
   });
 
@@ -88,11 +94,13 @@ exports.forgotPassword = async (req, res, next) => {
     // check of the email matches existing emails
     const user = await User.findOne({ email }).select('+password')
     if(!user) return next(new AppError('User does not exist', 400))
+    let url = "http://localhost:8080/api/v1/auth/reset"
   
-    await new sendEmail({
-      email: user.email,
-      subject: "welcome to paul's hub",
-      message: 'gdsdhhsjgdjjjdsjdsgs',
-    });
-    sendToken(user, res, 200);
+    try{
+      await new sendEmail(user, url).passwordReset()
+  
+      sendToken(user, res, 200);
+    }catch(err){
+      next(new AppError(err.message, 404))
+    }
   };
