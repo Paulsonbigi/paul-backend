@@ -79,10 +79,10 @@ exports.login = catchAsync(async (req, res, next) => {
     let url = `https//localhost:8080/api/v1/`
 
     try{
-      let sentEmail = new sendEmail( user, url).sendWelcome()
-      if(sentEmail){
-        console.log("Email sent successfully")
-      }
+      // let sentEmail = new sendEmail( user, url).sendWelcome()
+      // if(sentEmail){
+      //   console.log("Email sent successfully")
+      // }
       await  sendToken(user, res, 200);
     }catch(err){
       next(new AppError(err.message, 404))
@@ -99,9 +99,11 @@ exports.forgotPassword = async (req, res, next) => {
     // check of the email matches existing emails
     const user = await User.findOne({ email }).select('+password')
     if(!user) return next(new AppError('User does not exist', 400))
-    let url = "http://localhost:8080/api/v1/auth/reset"
+    
   
     try{
+      let token = jwt.sign({fullName, email, password}, user.getJwtToken(), {expiresIn: "10m"})
+      const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL : process.env.PROD_URL + `/forgot-password/reset/${token}`;
       await new sendEmail(user, url).passwordReset()
   
       sendToken(user, res, 200);
@@ -109,3 +111,12 @@ exports.forgotPassword = async (req, res, next) => {
       next(new AppError(err.message, 404))
     }
   };
+
+// @Route POST request
+// @desc update password
+//  @access public access
+exports.updatePassword = async (req, res, next) => {
+  const { newPassword, currentPassword, confirmPassword } = req.body
+
+  const id = req.user.id
+}
