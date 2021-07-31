@@ -50,10 +50,7 @@ exports.register = async (req, res, next) => {
         // send user a confirmation email
         try{
 
-          const url =
-            process.env.NODE_ENV === "development"
-            ? "http://localhost:4000/"
-            : "https://domain.com/home";
+          const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL : process.env.PROD_URL;
           new sendEmail(user, url).sendWelcome()
       
           sendToken(user, res, 200);
@@ -82,7 +79,10 @@ exports.login = catchAsync(async (req, res, next) => {
     let url = `https//localhost:8080/api/v1/`
 
     try{
-      new sendEmail(user, url).sendWelcome()
+      let sentEmail = new sendEmail( user, url).sendWelcome()
+      if(sentEmail){
+        console.log("Email sent successfully")
+      }
       await  sendToken(user, res, 200);
     }catch(err){
       next(new AppError(err.message, 404))

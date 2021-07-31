@@ -16,13 +16,26 @@ const transporter = nodemailer.createTransport({
 
 class SendEmail {
   constructor(to, firstName, url, from) {
-    this.to = User.email;
-    this.firstName = User.firstName;
+    this.to = user.email;
+    this.fullName = user.fullName;
     this.url = url;
     this.from = 'domail <noreply@domain.org';
   }
 
- 
+  sendTransport() {
+    if (process.env.NODE_ENV === "production") {
+      // return nodemailer.createTransport(nodemailerOptions);
+    }
+
+    return nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      auth: {
+        user: process.env.SMTP_USERNAME,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+  }
 
   async send(template, subject) {
     const html = ejs.renderFile(
@@ -44,7 +57,7 @@ class SendEmail {
     };
 
     //create transport and send email
-    await transporter.sendMail(message);
+    await this.sendTransport().sendMail(message);
   }
 
   // send user welcome message
@@ -55,8 +68,7 @@ class SendEmail {
    // send reset password message
    async passwordReset() {
     await this.send(
-      "passwordReset",
-      "Your password reset token (valid only for 10 minutes)"
+      "passwordReset", "Your password reset token (valid only for 10 minutes)"
     );
   }
 }
