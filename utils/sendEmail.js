@@ -41,7 +41,7 @@ class SendEmail {
     const html = ejs.renderFile(
       path.join(__dirname, `../views/emails/${template}.ejs`),
       {
-        firstName: this.fullName,
+        fullName: this.fullName,
         url: this.url,
         subject
       }

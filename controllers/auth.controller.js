@@ -79,10 +79,10 @@ exports.login = catchAsync(async (req, res, next) => {
     let url = `https//localhost:8080/api/v1/`
 
     try{
-      // let sentEmail = new sendEmail( user, url).sendWelcome()
-      // if(sentEmail){
-      //   console.log("Email sent successfully")
-      // }
+      let sentEmail = new sendEmail( user, url).sendWelcome()
+      if(sentEmail){
+        console.log("Email sent successfully")
+      }
       await  sendToken(user, res, 200);
     }catch(err){
       next(new AppError(err.message, 404))
@@ -102,11 +102,11 @@ exports.forgotPassword = async (req, res, next) => {
     
   
     try{
-      let token = jwt.sign({fullName, email, password}, user.getJwtToken(), {expiresIn: "10m"})
+      let token = await user.getJwtToken()
       const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL+ `/forgot-password/reset/${token}` : process.env.PROD_URL + `/forgot-password/reset/${token}`;
       await new sendEmail(user, url).passwordReset()
   
-      sendToken(user, res, 200);
+      sendToken(res, 200);
     }catch(err){
       next(new AppError(err.message, 404))
     }
