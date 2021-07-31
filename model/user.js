@@ -45,6 +45,10 @@ const UserSchema = new Schema({
         },
         required: [true, 'Confirm password to continue']
     },
+    resetLink: {
+        type: String,
+        default: ""
+    },
     forgotPasswordResetToken: {
         type: String,
     },

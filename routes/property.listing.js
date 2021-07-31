@@ -4,8 +4,8 @@ const Roles = require("../utils/roles")
 const {auth} = require("../middleware/auth")
 const {authorize} = require("../middleware/resrict")
 
-const { AllUsers } = require("../controllers/user")
+const { ListProperty } = require("../controllers/property.listing")
 
-router.get("/",auth,  AllUsers)
+router.post("/list",auth,  ListProperty)
 
 module.exports = router
