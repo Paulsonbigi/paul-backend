@@ -103,7 +103,7 @@ exports.forgotPassword = async (req, res, next) => {
   
     try{
       let token = jwt.sign({fullName, email, password}, user.getJwtToken(), {expiresIn: "10m"})
-      const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL : process.env.PROD_URL + `/forgot-password/reset/${token}`;
+      const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL+ `/forgot-password/reset/${token}` : process.env.PROD_URL + `/forgot-password/reset/${token}`;
       await new sendEmail(user, url).passwordReset()
   
       sendToken(user, res, 200);
