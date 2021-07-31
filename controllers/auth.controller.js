@@ -49,7 +49,12 @@ exports.register = async (req, res, next) => {
 
         // send user a confirmation email
         try{
-          await new sendEmail(user, url).sendWelcome()
+
+          const url =
+            process.env.NODE_ENV === "development"
+            ? "http://localhost:4000/"
+            : "https://domain.com/home";
+          new sendEmail(user, url).sendWelcome()
       
           sendToken(user, res, 200);
         }catch(err){
@@ -77,8 +82,8 @@ exports.login = catchAsync(async (req, res, next) => {
     let url = `https//localhost:8080/api/v1/`
 
     try{
-  
-      sendToken(user, res, 200);
+      new sendEmail(user, url).sendWelcome()
+      await  sendToken(user, res, 200);
     }catch(err){
       next(new AppError(err.message, 404))
     }
