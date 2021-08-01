@@ -1,6 +1,7 @@
 const PropertyListing = require('../model/property_listing');
 const AppError = require('../Error/appError');
 const propertyListing = require("../model/property_listing")
+const queryString = require("query-string")
 
 // custom response 
 const sendData = async (data, res, statusCode) => {
@@ -49,11 +50,20 @@ exports.getListedProperties = async (req, res, next) => {
 exports.getPaginatedProperties = async (req, res, next) => {
     try{
 
-        let page = req.query.page
-        let limit = req.query
+        const pageOptions = {
+            page: parseInt(req.query.page, 10) || 0,
+            limit: parseInt(req.query.limit, 10) || 10
+        }
         
-        let queriedProducts = await propertyListing.findAll().paginate({page: page, limit: limit}).exec()
-        sendData(queriedProducts, res, 200)
+        propertyListing.find()
+            .skip(pageOptions.page * pageOptions.limit)
+            .limit(pageOptions.limit)
+            .exec(function(err, queriedProducts) {
+                if(err) return next(new AppError(err.message, 404))
+
+                sendData(queriedProducts, res, 200)
+            })
+
 
     } catch(err) {
         next(new AppError(err.message, 404))
