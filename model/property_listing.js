@@ -40,6 +40,10 @@ const ListingSchema = new Schema({
         type: String,
         required: [true, "Author is required"]
     },
+    slug: {
+        type: String,
+        slug: "title"
+    },
     agreementForm : {
         type: String,
         data: Buffer,

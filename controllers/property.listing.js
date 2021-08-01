@@ -49,7 +49,11 @@ exports.getListedProperties = async (req, res, next) => {
 exports.getPaginatedProperties = async (req, res, next) => {
     try{
 
+        let page = req.query.page
+        let limit = req.query
         
+        let queriedProducts = await propertyListing.findAll().paginate({page: page, limit: limit}).exec()
+        sendData(queriedProducts, res, 200)
 
     } catch(err) {
         next(new AppError(err.message, 404))

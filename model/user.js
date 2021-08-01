@@ -55,6 +55,10 @@ const UserSchema = new Schema({
     forgotPasswordExpires: {
         type: String,
     },
+    slug: {
+        type: String,
+        slug: "title"
+    },
     createdAt: {
         type: Date,
         default: Date.now,

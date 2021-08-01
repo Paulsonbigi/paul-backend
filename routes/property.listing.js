@@ -8,7 +8,7 @@ const { ListProperty, getListedProperties, getPaginatedProperties, getSelectedPr
 
 router.post("/list", auth,  ListProperty)
 router.get("/listings", getListedProperties)
-router.get(`/listings`, getPaginatedProperties)
+router.get(`/listings/selected`, getPaginatedProperties)
 router.get(`/listings/_slug`, getSelectedPropertyByCountry)
 
 module.exports = router
