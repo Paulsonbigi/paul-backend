@@ -1,9 +1,9 @@
 const mongoose = require("mongoose")
 const validator = require('validator');
-
+const AppError = require("../Error/appError");
 const { Schema } = mongoose
 
-const propertyListing = new Schema({
+const ListingSchema = new Schema({
     title: {
         type: String,
         required: [true, "Title field is required"]
@@ -57,4 +57,14 @@ const propertyListing = new Schema({
     }
 })
 
-module.exports = mongoose.model("PropertyListing", propertyListing)
+// ListingSchema.pre("save", function(next) {
+//     propertyListing.find({ title: this.title}, (err, list) => {
+//         if(list.length === 0) {
+//             return next()
+//         }
+//         next (new AppError ("This title already exits", 400))
+//         return false
+//     })
+// })
+
+module.exports = mongoose.model("PropertyListing", ListingSchema)
