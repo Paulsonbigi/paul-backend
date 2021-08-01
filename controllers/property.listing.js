@@ -44,6 +44,19 @@ exports.getListedProperties = async (req, res, next) => {
 }
 
 // @Route GET request
+// @desc request to get paginated properties 
+// @access public access
+exports.getPaginatedProperties = async (req, res, next) => {
+    try{
+
+        
+
+    } catch(err) {
+        next(new AppError(err.message, 404))
+    }
+}
+
+// @Route GET request
 // @desc request to get a with different query parameters
 // @access public access
 exports.getSelectedPropertyByTitle = async (req, res, next) => {
@@ -67,9 +80,12 @@ exports.getSelectedPropertyByTitle = async (req, res, next) => {
 exports.getSelectedPropertyByNumberOfBathrooms = async (req, res, next) => {
     try{
 
-        let bathrooms = req.param.bathrooms
+        let preferredBethrooms = req.param.bathrooms
+        if(!preferredState) return next(new AppError('State not available', 400)); 
 
-        const property = await propertyListing.findOne({ bathrooms })
+        const sortedDate = propertyListing.filter( result => result.bathrooms === preferredBethrooms)
+
+        const property = await sortedDate.find()
         if(!property) return next(new AppError('No such property exists', 400)); 
 
         sendData(property, res, 200)
@@ -85,9 +101,12 @@ exports.getSelectedPropertyByNumberOfBathrooms = async (req, res, next) => {
 exports.getSelectedPropertyByCountry = async (req, res, next) => {
     try{
 
-        let country = req.param.country
+        let preferredCountry = req.param.country
+        if(!preferredState) return next(new AppError('State not available', 400)); 
 
-        const property = await propertyListing.findOne({ country })
+        const sortedDate = propertyListing.filter( result => result.country === preferredCountry)
+
+        const property = await sortedDate.find()
         if(!property) return next(new AppError('No such property exists', 400)); 
 
         sendData(property, res, 200)
@@ -103,9 +122,12 @@ exports.getSelectedPropertyByCountry = async (req, res, next) => {
 exports.getSelectedPropertyByState = async (req, res, next) => {
     try{
 
-        let state = req.param.state
+        let preferredState = req.param.state
+        if(!preferredState) return next(new AppError('State not available', 400)); 
 
-        const property = await propertyListing.findOne({ state })
+        const sortedDate = propertyListing.filter( result => result.state === preferredState)
+
+        const property = await sortedDate.find()
         if(!property) return next(new AppError('No such property exists', 400)); 
 
         sendData(property, res, 200)
@@ -114,3 +136,4 @@ exports.getSelectedPropertyByState = async (req, res, next) => {
         next(new AppError(err.message, 404))
     }
 }
+

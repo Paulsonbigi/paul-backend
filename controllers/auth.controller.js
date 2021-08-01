@@ -1,10 +1,13 @@
 const gravatar = require("gravatar")
 const normalize = require("normalize-url");
+const multer = require("multer");
+const path = require("path");
 
 const User = require("../model/user")
 const AppError = require("../Error/appError");
 const sendEmail = require('../utils/sendEmail');
 const catchAsync = require("../utils/catch")
+// const upload = require('../utils/fileUpload');
 
 const sendToken = async (user, res, statusCode) => {
     const token = await user.getJwtToken();
@@ -23,6 +26,30 @@ const sendToken = async (user, res, statusCode) => {
     })
 }
 
+
+var Storage = multer.diskStorage({
+  destination: function(req, file, callback) {
+    callback(null, path.join(__dirname, "./utils/uploads/"));
+  },
+  filename: function(req, file, callback) {
+    callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+  }
+});
+const upload = multer({
+  storage: Storage,
+  limits: {
+    fileSize: 3000000
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(new Error("Please upload an image "));
+    }
+
+    cb(undefined, true);
+  }
+});
+
+
 // @Route POST A USER
 // @desc register a new user on the database
 //  @access public access
@@ -39,6 +66,11 @@ exports.register = async (req, res, next) => {
               }),
               { forceHttps: true }
           );
+
+          // await upload(req, res, (err) => {
+          //   if(err) return new AppError(err.message, 404)
+          // })
+          // console.log(req.file)
 
           const user = await User.create({ fullName, email, phoneNumber, password, confirmPassword, image: avatar })
 
