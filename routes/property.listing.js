@@ -6,6 +6,6 @@ const {authorize} = require("../middleware/resrict")
 
 const { ListProperty } = require("../controllers/property.listing")
 
-router.post("/list",auth, authorize(Roles.ADMIN_ROLE),  ListProperty)
+router.post("/list",auth,  ListProperty)
 
 module.exports = router

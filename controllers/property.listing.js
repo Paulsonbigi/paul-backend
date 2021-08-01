@@ -3,9 +3,10 @@ const AppError = require('../Error/appError');
 const propertyListing = require("../model/property_listing")
 
 exports.ListProperty = async (req, res, next) => {
-    const { title, property_type, bedrooms, bathrooms, unit, land_mass, address, phone_number, author } = req.body
+    
     try{
-
+        const { title, property_type, bedrooms, bathrooms, unit, land_mass, address, phone_number, author } = req.body
+        
         const Listing = await propertyListing.findOne({ title })
         if(Listing) return next(new AppError('Create a unique title', 400)); 
 

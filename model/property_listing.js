@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const validator = require('validator');
 
 const { Schema } = mongoose
 
@@ -38,6 +39,21 @@ const propertyListing = new Schema({
     author: {
         type: String,
         required: [true, "Author is required"]
+    },
+    agreementForm : {
+        type: String,
+        data: Buffer,
+        required: [true, "Agreement form is needed"]
+    },
+    pictures: {
+        data: Buffer,
+        type: Array,
+        required: [true, "Pictures are needed"]
+    },
+    videos: {
+        type: Array,
+        data: Buffer,
+        required: [true, "Please upload videos for prospective clients to see"]
     }
 })
 
