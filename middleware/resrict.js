@@ -4,7 +4,7 @@ exports.authorize = (...roles) => {
     return (req, res, next) => {
         if(!roles.includes(req.user.role)){
             return next(
-                new appError("Unauthorized", 401)
+                new appError("Unauthorized", 403)
             )
         }
         next()
