@@ -18,6 +18,7 @@ const sendToken = async (user, res, statusCode) => {
     if(process.env.NODE_ENV === "production"){
         cookieOption.secure = true;
     };
+    console.log(token)
 
     res.cookie("token", token, cookieOption).status(statusCode).json({
         success: true,
@@ -112,6 +113,21 @@ exports.login = catchAsync(async (req, res, next) => {
     }
     
   });
+
+// @Route POST request
+// @desc request for password change
+//  @access public access
+exports.logout = async (req, res, next) => {
+  res.cookie("token", "none", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
+  })
+
+  res.status(200).json({
+    success: true,
+    data: {}
+  })
+}
 
 // @Route POST request
 // @desc request for password change
