@@ -3,12 +3,11 @@ const user = require('../model/user');
 const AppError = require('../Error/appError');
 
 exports.auth = async (req, res, next) =>{
-   
   // // Verify token
   try {
     let token;
-    if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
-      token = headers.authorization.split(" ")[1];
+    if(req.headers.Authorization && req.headers.Authorization.startsWith("Bearer")){
+      token = headers.Authorization.split(" ")[1];
     } else if(req.cookies.token) {
         token = req.cookies.token;
     }
@@ -20,7 +19,7 @@ exports.auth = async (req, res, next) =>{
       )
     }
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const currentUser = user.findById(decoded.id).select("+password")
+      const currentUser = await user.findById(decoded.id).select("+password")
       console.log(currentUser)
         if(!currentUser) {
           return new AppError("User has been logged out", 401)
@@ -31,6 +30,6 @@ exports.auth = async (req, res, next) =>{
         req.user = currentUser
         next()
   } catch (err) {
-    return next(new AppError(err.message, 409))
+    return next(new AppError(err.messsage, err.statusCode))
   }
 }

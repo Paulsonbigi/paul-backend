@@ -18,7 +18,6 @@ const sendToken = async (user, res, statusCode) => {
     if(process.env.NODE_ENV === "production"){
         cookieOption.secure = true;
     };
-    console.log(token)
 
     res.cookie("token", token, cookieOption).status(statusCode).json({
         success: true,
@@ -102,17 +101,26 @@ exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError('Invalid credentials', 400));
       }
 
-      let url = `https//localhost:8080/api/v1/`
-      // let sentEmail = new sendEmail( user, url).sendWelcome()
-      // if(sentEmail){
-      //   console.log("Email sent successfully")
-      // }
       await  sendToken(user, res, 200);
+      console.log(user)
     }catch(err){
       next(new AppError(err.message, 404))
     }
     
   });
+
+// @Route GET request
+// @desc request to get authenticated user
+//  @access private access
+exports.getUser = async (req, res, next) => {
+  try{
+
+    res.status(200).send(res.user)
+
+  } catch(err){
+    next(new AppError(err.message, 404))
+  }
+}
 
 // @Route POST request
 // @desc request for password change

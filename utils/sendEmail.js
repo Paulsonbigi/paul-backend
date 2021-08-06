@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
   });
 
 class SendEmail {
-  constructor(to, firstName, url, from) {
+  constructor(firstName, url) {
     this.to = user.email;
     this.fullName = user.fullName;
     this.url = url;

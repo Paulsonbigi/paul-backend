@@ -4,8 +4,8 @@ const { ADMIN_ROLE } = require("../utils/roles")
 const {auth} = require("../middleware/auth")
 const {authorize} = require("../middleware/resrict")
 
-const { AllUsers } = require("../controllers/user")
+const { getUser } = require("../controllers/user")
 const roles = ['admin', "super admin"]
-router.get("/", auth, authorize(roles),  AllUsers)
+router.get("/get_profile", auth,  getUser)
 
 module.exports = router

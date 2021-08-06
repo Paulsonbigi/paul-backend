@@ -1,10 +1,17 @@
 const User = require('../model/user');
 const AppError = require('../Error/appError');
 
-exports.AllUsers = async (req, res, next) => {
+// @Route GET request
+// @desc request to get authenticated user
+//  @access private access
+exports.getUser = async (req, res, next) => {
     try{
-        res.send("Hello Paul")
+      res.status(200).json({
+        user: req.user
+      })
+  
     } catch(err){
-        next(new AppError(err.message, 404))
+      next(new AppError(err.message, 404))
     }
-}
+  }
+  
