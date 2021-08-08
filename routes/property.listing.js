@@ -9,13 +9,16 @@ const { ListProperty,
         getPaginatedProperties, 
         getSelectedPropertyByTitle, 
         getSelectedPropertyByCountry, 
-        getSelectedPropertyByState 
+        getSelectedPropertyByState,
+        updateListedProperty
     } = require("../controllers/property.listing")
 
-router.post("/list", auth,  ListProperty)
+    let roles = ["agent"]
+router.post("/list", auth, authorize(roles),  ListProperty)
 router.get("/listings", getListedProperties)
 router.get(`/listings/selected`, auth, getPaginatedProperties)
 router.get(`/listings/country/:slug`, getSelectedPropertyByCountry)
 router.get(`/listings/state/:slug`, getSelectedPropertyByState)
+router.patch(`/update_property/:id`, auth, updateListedProperty)
 
 module.exports = router

@@ -2,6 +2,7 @@ const PropertyListing = require('../model/property_listing');
 const AppError = require('../Error/appError');
 const propertyListing = require("../model/property_listing")
 const queryString = require("query-string")
+const { MongoClient, ObjectID } = require('mongodb')
 
 // custom response 
 const sendData = async (data, res, statusCode) => {
@@ -38,6 +39,29 @@ exports.getListedProperties = async (req, res, next) => {
     try{
         const AllListedPropeties = await propertyListing.find()
         sendData(AllListedPropeties, res, 200)
+
+    }catch(err){
+      next(new AppError(err.message, 404))
+    }
+}
+
+// @Route PATCH request
+// @desc request to get all available properties
+// @access public access
+exports.updateListedProperty = async (req, res, next) => {
+    try{
+        let listingID = req.params.id 
+        
+        const propertyForUpdate = await propertyListing.findByIdAndUpdate( ObjectID(listingID), req.body, { new: true}, (err, data) =>{
+            if(err) return next(new AppError("Unknown request", 401))
+
+            res.status(200).json({
+                success: true,
+                msg: "Property updated successfully"
+            })
+        } )
+
+
 
     }catch(err){
       next(new AppError(err.message, 404))
@@ -115,7 +139,7 @@ exports.getSelectedPropertyByCountry = async (req, res, next) => {
 
         let preferredCountry = req.param.country
         
-        const AllListedPropeties = await propertyListing.find({ state: preferredCountry})
+        const AllListedPropeties = await propertyListing.find({ country: preferredCountry})
         sendData(AllListedPropeties, res, 200)
 
     } catch(err) {
