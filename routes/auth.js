@@ -6,7 +6,7 @@ const { register, login, logout, updateEmailRequest } = require("../controllers/
 
 router.post("/register", register)
 router.post("/login", login)
-router.get("/email_update_request", auth, updateEmailRequest)
+router.post("/email_update_request", auth, updateEmailRequest)
 router.post("/logout", logout)
 
 module.exports = router

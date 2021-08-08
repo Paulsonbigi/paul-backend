@@ -55,7 +55,7 @@ const upload = multer({
 exports.register = async (req, res, next) => {
         try{
           // send user a confirmation email
-          const { fullName, email, phoneNumber, password, confirmPassword} = req.body
+          const { fullName, email, phoneNumber, password, confirmPassword, role} = req.body
 
           const avatar = normalize(
               gravatar.url(email, {
@@ -71,12 +71,12 @@ exports.register = async (req, res, next) => {
           // })
           // console.log(req.file)
 
-          const user = await User.create({ fullName, email, phoneNumber, password, confirmPassword, image: avatar })
+          const user = await User.create({ fullName, email, phoneNumber, password, confirmPassword, image: avatar, role })
 
           const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL : process.env.PROD_URL;
-          new sendEmail(user, url).sendWelcome()
+          // new sendEmail(user, url).sendWelcome()
       
-          sendToken({}, res, 200);
+          sendToken(user, res, 200);
         }catch(err){
           next(new AppError(err.message, 404))
         }
@@ -91,6 +91,7 @@ exports.login = catchAsync(async (req, res, next) => {
     
       // check if user exists
       const user = await User.findOne({ email }).select('+password');
+  
       if (!user) return next(new AppError('User does not exist', 400));
     
       // check if password matches
@@ -100,7 +101,10 @@ exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError('Invalid credentials', 400));
       }
 
+      const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL : process.env.PROD_URL;
+      
       await  sendToken(user, res, 200);
+      new sendEmail(user, url).sendWelcome()
     }catch(err){
       next(new AppError(err.message, 404))
     }
@@ -149,7 +153,12 @@ exports.forgotPassword = async (req, res, next) => {
 exports.updatePasswordRequest = async (req, res, next) => {
   const { email } = req.body
   const user = await User.findOne({ email }).select('+password')
-  if(!user) return next(new AppError("Please enter a valid email", 400))
+    if(!user) return next(new AppError("Please enter a valid email", 400))
+
+    res.status(200).json({
+      success: true,
+      msg: "A "
+    })
 
   
 }
@@ -176,7 +185,7 @@ exports.updateEmailRequest = async (req, res, next) => {
 
     let token = await user.getJwtToken()
     const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL+ `/email-rest/${token}` : process.env.PROD_URL + `/email-rest/${token}`;
-    new sendEmail(user, url).emailResetRequest()
+    await new sendEmail(user, url).emailResetRequest()
     
     await res.status(200).json({
       succes: true,

@@ -13,7 +13,7 @@ const { ListProperty,
         updateListedProperty
     } = require("../controllers/property.listing")
 
-    let roles = ["agent"]
+let roles = ["agent"]
 router.post("/list", auth, authorize(roles),  ListProperty)
 router.get("/listings", getListedProperties)
 router.get(`/listings/selected`, auth, getPaginatedProperties)

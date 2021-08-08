@@ -38,6 +38,7 @@ class SendEmail {
   }
 
   async send(template, subject) {
+    console.log("Hi Email")
     const html = ejs.renderFile(
       path.join(__dirname, `../views/emails/${template}.ejs`),
       {
@@ -62,6 +63,7 @@ class SendEmail {
 
   // send user welcome message
   async sendWelcome() {
+    
      await this.send('welcome', 'Welcome to Domain.com')
   }
 
