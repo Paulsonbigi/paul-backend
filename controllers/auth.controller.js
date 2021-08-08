@@ -21,7 +21,6 @@ const sendToken = async (user, res, statusCode) => {
 
     res.cookie("token", token, cookieOption).status(statusCode).json({
         success: true,
-        data: user,
         token
     })
 }
@@ -77,7 +76,7 @@ exports.register = async (req, res, next) => {
           const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL : process.env.PROD_URL;
           new sendEmail(user, url).sendWelcome()
       
-          sendToken(user, res, 200);
+          sendToken({}, res, 200);
         }catch(err){
           next(new AppError(err.message, 404))
         }
@@ -102,25 +101,11 @@ exports.login = catchAsync(async (req, res, next) => {
       }
 
       await  sendToken(user, res, 200);
-      console.log(user)
     }catch(err){
       next(new AppError(err.message, 404))
     }
     
   });
-
-// @Route GET request
-// @desc request to get authenticated user
-//  @access private access
-exports.getUser = async (req, res, next) => {
-  try{
-
-    res.status(200).send(res.user)
-
-  } catch(err){
-    next(new AppError(err.message, 404))
-  }
-}
 
 // @Route POST request
 // @desc request for password change
@@ -160,9 +145,68 @@ exports.forgotPassword = async (req, res, next) => {
 
 // @Route POST request
 // @desc update password
-//  @access public access
+//  @access private access
+exports.updatePasswordRequest = async (req, res, next) => {
+  const { email } = req.body
+  const user = await User.findOne({ email }).select('+password')
+  if(!user) return next(new AppError("Please enter a valid email", 400))
+
+  
+}
+
+// @Route POST request
+// @desc update password
+//  @access private access
 exports.updatePassword = async (req, res, next) => {
   const { newPassword, currentPassword, confirmPassword } = req.body
 
   const id = req.user.id
+}
+
+// @Route POST request
+// @desc update password
+//  @access public access
+exports.updateEmailRequest = async (req, res, next) => {
+
+  try{
+    const { email } = req.body
+    const user = await User.findOne({ email }).select('+password')
+    if(!user) return next(new AppError("Please enter a valid email, you can't perform this operation.", 400))
+    
+
+    let token = await user.getJwtToken()
+    const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL+ `/email-rest/${token}` : process.env.PROD_URL + `/email-rest/${token}`;
+    new sendEmail(user, url).emailResetRequest()
+    
+    await res.status(200).json({
+      succes: true,
+      msg: "An email reset token has been sent to this email"
+    })
+  } catch(err){
+      next(new AppError(err.message, 404))
+  }
+}
+
+// @Route POST request
+// @desc update password
+//  @access private access
+exports.updateEmail = async (req, res, next) => {
+
+  try{
+    const { email } = req.body
+    const user = await User.findOne({ email }).select('+password')
+    if(!user) return next(new AppError("Please enter a valid email, you can't perform this operation.", 400))
+    
+
+    let token = await user.getJwtToken()
+    const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL+ `/email-rest/${token}` : process.env.PROD_URL + `/email-rest/${token}`;
+    new sendEmail(user, url).emailResetRequest()
+    
+    await res.status(200).json({
+      succes: true,
+      msg: "An email reset token has been sent to this email"
+    })
+  } catch(err){
+      next(new AppError(err.message, 404))
+  }
 }

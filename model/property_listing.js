@@ -28,6 +28,18 @@ const ListingSchema = new Schema({
         type: String,
         required: [true, "Land size is required"]
     },
+    country: {
+        type: String,
+        required: [true, "Country of residence is required"]
+    },
+    state: {
+        type: String,
+        required: [true, "State of residence is required"]
+    },
+    city: {
+        type: String,
+        required: [true, "City is required"]
+    },
     address: {
         type: String,
         required: [true, "Address field is required"]
@@ -46,18 +58,15 @@ const ListingSchema = new Schema({
     },
     agreementForm : {
         type: String,
-        data: Buffer,
-        required: [true, "Agreement form is needed"]
+        data: Buffer
     },
     pictures: {
         data: Buffer,
-        type: Array,
-        required: [true, "Pictures are needed"]
+        type: Array
     },
     videos: {
         type: Array,
-        data: Buffer,
-        required: [true, "Please upload videos for prospective clients to see"]
+        data: Buffer
     }
 })
 

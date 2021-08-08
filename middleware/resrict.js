@@ -2,8 +2,7 @@ const appError =  require("../Error/appError")
 
 exports.authorize = (roles) => {
     return (req, res, next) => {
-        console.log(req.data)
-        if(!roles.includes(req.data.role)){
+        if(!roles.includes(req.user.role)){
             return next(
                 new appError("Unauthorized operation", 403)
             )

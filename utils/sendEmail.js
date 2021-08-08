@@ -65,12 +65,19 @@ class SendEmail {
      await this.send('welcome', 'Welcome to Domain.com')
   }
 
-   // send reset password message
-   async passwordReset() {
+  // send reset password message
+  async passwordReset() {
     await this.send(
       "passwordReset", "Your password reset token (valid only for 10 minutes)"
     );
   }
+
+  // email reset message
+  async emailResetRequest(){
+    await this.send("Email Reset Request", "Please comfirm if you are the one making this request (token valid for 10 minutes)")
+  }
+
+  
 }
 
 module.exports = SendEmail

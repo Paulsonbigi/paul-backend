@@ -17,12 +17,12 @@ const sendData = async (data, res, statusCode) => {
 exports.ListProperty = async (req, res, next) => {
     
     try{
-        const { title, property_type, bedrooms, bathrooms, unit, land_mass, address, phone_number, author } = req.body
+        const { title, property_type, bedrooms, bathrooms, unit, land_mass, address, phone_number, author, city, state, country } = req.body
         
         const Listing = await propertyListing.findOne({ title })
         if(Listing) return next(new AppError('Create a unique title', 400)); 
 
-        const newListing = propertyListing({ title, property_type, bedrooms, bathrooms, unit, land_mass, address, phone_number, author })
+        const newListing = propertyListing({ title, property_type, bedrooms, bathrooms, unit, land_mass, address, phone_number, author, country, state, city })
         await newListing.save()
             res.status(200)
             res.json({msg: 'Listing created successfully'})
@@ -76,12 +76,12 @@ exports.getPaginatedProperties = async (req, res, next) => {
 exports.getSelectedPropertyByTitle = async (req, res, next) => {
     try{
 
-        let title = req.param.title
 
-        const property = await propertyListing.findOne({ title })
-        if(!property) return next(new AppError('No such property exists', 400)); 
-
-        sendData(property, res, 200)
+        if(!req.param) return next(new AppError("Enter a paramenter", 400))
+        let searchTitle = req.params.slug
+        
+        const AllListedPropeties = await propertyListing.find({ title: searchTitle })
+        sendData(AllListedPropeties, res, 200)
 
     } catch(err) {
         next(new AppError(err.message, 404))
@@ -94,15 +94,11 @@ exports.getSelectedPropertyByTitle = async (req, res, next) => {
 exports.getSelectedPropertyByNumberOfBathrooms = async (req, res, next) => {
     try{
 
-        let preferredBethrooms = req.param.bathrooms
-        if(!preferredState) return next(new AppError('State not available', 400)); 
-
-        const sortedDate = propertyListing.filter( result => result.bathrooms === preferredBethrooms)
-
-        const property = await sortedDate.find()
-        if(!property) return next(new AppError('No such property exists', 400)); 
-
-        sendData(property, res, 200)
+        if(!req.param) return next(new AppError("Enter a paramenter", 400))
+        let preferredBethrooms = req.params.slug
+        
+        const AllListedPropeties = await propertyListing.find({ bathrooms: preferredBethrooms })
+        sendData(AllListedPropeties, res, 200)
 
     } catch(err) {
         next(new AppError(err.message, 404))
@@ -115,15 +111,12 @@ exports.getSelectedPropertyByNumberOfBathrooms = async (req, res, next) => {
 exports.getSelectedPropertyByCountry = async (req, res, next) => {
     try{
 
+        if(!req.param) return next(new AppError("Enter a paramenter", 400))
+
         let preferredCountry = req.param.country
-        if(!preferredState) return next(new AppError('State not available', 400)); 
-
-        const sortedDate = propertyListing.filter( result => result.country === preferredCountry)
-
-        const property = await sortedDate.find()
-        if(!property) return next(new AppError('No such property exists', 400)); 
-
-        sendData(property, res, 200)
+        
+        const AllListedPropeties = await propertyListing.find({ state: preferredCountry})
+        sendData(AllListedPropeties, res, 200)
 
     } catch(err) {
         next(new AppError(err.message, 404))
@@ -135,16 +128,11 @@ exports.getSelectedPropertyByCountry = async (req, res, next) => {
 // @access public access
 exports.getSelectedPropertyByState = async (req, res, next) => {
     try{
-
-        let preferredState = req.param.state
-        if(!preferredState) return next(new AppError('State not available', 400)); 
-
-        const sortedDate = propertyListing.filter( result => result.state === preferredState)
-
-        const property = await sortedDate.find()
-        if(!property) return next(new AppError('No such property exists', 400)); 
-
-        sendData(property, res, 200)
+        if(!req.param) return next(new AppError("Enter a paramenter", 400))
+        let preferredState = req.params.slug
+        
+        const AllListedPropeties = await propertyListing.find({ state: preferredState })
+        sendData(AllListedPropeties, res, 200)
 
     } catch(err) {
         next(new AppError(err.message, 404))

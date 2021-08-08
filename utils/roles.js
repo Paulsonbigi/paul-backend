@@ -1,5 +1,3 @@
-module.export = {
-    "ADMIN_ROLE": "admin",
-    "USER_ROLE": "user",
-    "SUPER_USER_ROLE": "Super user"
-}
+module.export = [
+    "user", "admin", "super admin"
+]

@@ -1,11 +1,11 @@
 const express = require("express")
 const router = express.Router();
-const { ADMIN_ROLE } = require("../utils/roles")
 const {auth} = require("../middleware/auth")
 const {authorize} = require("../middleware/resrict")
 
-const { getUser } = require("../controllers/user")
-const roles = ['admin', "super admin"]
-router.get("/get_profile", auth,  getUser)
+const { getUser, getAllUsers } = require("../controllers/user")
+const roles = [ "user", "admin"]
+router.get("/get_profile", auth, authorize(roles[0]),  getUser)
+router.get("/get_all_users", auth, authorize(roles[1]),  getAllUsers)
 
 module.exports = router

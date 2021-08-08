@@ -20,7 +20,6 @@ exports.auth = async (req, res, next) =>{
     }
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const currentUser = await user.findById(decoded.id).select("+password")
-      console.log(currentUser)
         if(!currentUser) {
           return new AppError("User has been logged out", 401)
         }   
