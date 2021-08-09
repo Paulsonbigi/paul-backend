@@ -59,7 +59,7 @@ const upload = multer({
 exports.register = async (req, res, next) => {
         try{
           // send user a confirmation email
-          const { fullName, email, phoneNumber, password, confirmPassword, role} = req.body
+          const { firstName, lastName, email, phoneNumber, password, confirmPassword } = req.body
 
           const avatar = normalize(
               gravatar.url(email, {
@@ -70,15 +70,10 @@ exports.register = async (req, res, next) => {
               { forceHttps: true }
           );
 
-          // await upload(req, res, (err) => {
-          //   if(err) return new AppError(err.message, 404)
-          // })
-          // console.log(req.file)
-
-          const user = await User.create({ fullName, email, phoneNumber, password, confirmPassword, image: avatar, role })
+          const user = await User.create( req.body ) 
 
           const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL : process.env.PROD_URL;
-          // new sendEmail(user, url).sendWelcome()
+          new Email(user, url).sendWelcome()
       
           sendToken(user, res, 200);
         }catch(err){

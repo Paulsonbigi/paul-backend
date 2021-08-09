@@ -7,9 +7,13 @@ const validator = require('validator');
 const { Schema } = mongoose
 
 const UserSchema = new Schema({
-    fullName: { 
+    firstName: { 
         type: String,
-        requires: [true, "name field is required"]
+        requires: [true, "first name field is required"]
+    },
+    lastName: { 
+        type: String,
+        requires: [true, "last name field is required"]
     },
     email: {
         type: String,

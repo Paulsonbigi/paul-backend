@@ -24,5 +24,11 @@ app.use('/api/v1/user', userRoute);
 app.use('/api/v1/property_listing', listingRoute);
 app.use('/api/v1/places', placesRoute);
 app.use(globalError);
+app.all("*", (req, res, next) => {
+    res.status(404).json({
+        success: false,
+        msg: "Route not defined"
+    })
+})
 
 module.exports = app;

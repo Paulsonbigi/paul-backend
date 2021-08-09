@@ -4,6 +4,7 @@ const path = require('path');
 const htmlToText = require('html-to-text');
 const User = require('../model/user');
 const SMTPTransport = require('nodemailer/lib/smtp-transport');
+const user = require('../model/user');
 
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -16,7 +17,7 @@ const transporter = nodemailer.createTransport({
 class Email {
   constructor(user, url) {
     this.to = user.email;
-    this.firstName = user.fullName;
+    this.firstName = user.firstName;
     this.url = url;
     this.from = 'domail <noreply@domain.org';
   }
@@ -37,7 +38,7 @@ class Email {
   }
 
   async send(template, subject) {
-    console.log("Hi Email")
+    console.log(user)
     const html = pug.renderFile(
       path.join(__dirname, `../views/emails/${template}.pug`),
       {
