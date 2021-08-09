@@ -2,12 +2,16 @@ const gravatar = require("gravatar")
 const normalize = require("normalize-url");
 const multer = require("multer");
 const path = require("path");
+const ejs = require('ejs');
 
 const User = require("../model/user")
 const AppError = require("../Error/appError");
-const sendEmail = require('../utils/sendEmail');
+const Email = require('../utils/sendEmail');
 const catchAsync = require("../utils/catch")
 // const upload = require('../utils/fileUpload');
+
+
+
 
 const sendToken = async (user, res, statusCode) => {
     const token = await user.getJwtToken();
@@ -101,10 +105,20 @@ exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError('Invalid credentials', 400));
       }
 
-      const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL : process.env.PROD_URL;
+
+      const url = `${req.protocol}://${req.get('host')}/me`
+      // const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL : process.env.PROD_URL;
+      // const sendUserEmail = async () => {
+      //   transport.sendMail(mailOptions, (error, info) => {
+      //     if (error) {
+      //       return console.log(error);
+      //     }
+      //     console.log('Message sent: %s', info.messageId);
+      //   });
+      // }
+      await new Email(user, url).sendWelcome()
+      sendToken(user, res, 200);
       
-      await  sendToken(user, res, 200);
-      new sendEmail(user, url).sendWelcome()
     }catch(err){
       next(new AppError(err.message, 404))
     }

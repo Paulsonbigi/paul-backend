@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const ejs = require('ejs');
+const pug = require('pug');
 const path = require('path');
 const htmlToText = require('html-to-text');
 const User = require('../model/user');
@@ -13,11 +13,10 @@ const transporter = nodemailer.createTransport({
       pass: process.env.SMTP_PASSWORD,
     },
   });
-
-class SendEmail {
-  constructor(firstName, url) {
+class Email {
+  constructor(user, url) {
     this.to = user.email;
-    this.fullName = user.fullName;
+    this.firstName = user.fullName;
     this.url = url;
     this.from = 'domail <noreply@domain.org';
   }
@@ -39,10 +38,10 @@ class SendEmail {
 
   async send(template, subject) {
     console.log("Hi Email")
-    const html = ejs.renderFile(
-      path.join(__dirname, `../views/emails/${template}.ejs`),
+    const html = pug.renderFile(
+      path.join(__dirname, `../views/emails/${template}.pug`),
       {
-        fullName: this.fullName,
+        firstName: this.firstName,
         url: this.url,
         subject
       }
@@ -78,8 +77,6 @@ class SendEmail {
   async emailResetRequest(){
     await this.send("Email Reset Request", "Please comfirm if you are the one making this request (token valid for 10 minutes)")
   }
-
-  
 }
 
-module.exports = SendEmail
+module.exports = Email
