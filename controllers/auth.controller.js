@@ -104,9 +104,6 @@ exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError('Invalid credentials', 400));
       }
 
-
-      const url = `${req.protocol}://${req.get('host')}/me`
-      await new Email(user, url).sendWelcome()
       sendToken(user, res, 200);
       
     }catch(err){

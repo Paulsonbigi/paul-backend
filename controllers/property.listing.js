@@ -45,6 +45,25 @@ exports.getListedProperties = async (req, res, next) => {
     }
 }
 
+// @Route GET request
+// @desc request to get all available properties
+// @access public access
+exports.getListedProperty = async (req, res, next) => {
+    try{
+        let listingID = req.params.id
+        if(!listingID) return next(new AppError("In correct property id", 401))
+        const listedProperty = await propertyListing.findById(ObjectID(listingID))
+            if(!listedProperty) return next(new AppError("Property not listed", 401))
+
+        
+
+        sendData(listedProperty, res, 200)
+
+    }catch(err){
+      next(new AppError(err.message, 404))
+    }
+}
+
 // @Route PATCH request
 // @desc request to get all available properties
 // @access public access
@@ -65,6 +84,17 @@ exports.updateListedProperty = async (req, res, next) => {
 
     }catch(err){
       next(new AppError(err.message, 404))
+    }
+}
+
+// @Route DELETE request
+// @desc request to get all available properties
+// @access public access
+exports.deleteAListedPropertyById = async (req, res, next) => {
+    try{
+
+    } catch(err){
+        next(new AppError(err.message, 404))
     }
 }
 
