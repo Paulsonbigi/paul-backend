@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const validator = require('validator');
+const crypto = require("crypto")
 
 const { Schema } = mongoose
 
@@ -31,6 +32,7 @@ const UserSchema = new Schema({
     image: String,
     role: {
         type: String,
+        enum: ['user', "admin", "agent", "landlord"],
         default: "user"
     },
     password: {
@@ -57,7 +59,7 @@ const UserSchema = new Schema({
         type: String,
     },
     forgotPasswordExpires: {
-        type: String,
+        type: Date,
     },
     slug: {
         type: String,
@@ -67,6 +69,9 @@ const UserSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+    passwordChangedAt: {
+        type: Date
+    }
 })
 
 UserSchema.pre('save', async function(next){
@@ -78,14 +83,34 @@ UserSchema.pre('save', async function(next){
     this.confirmPassword = undefined
 })
 
+UserSchema.pre('save', async function(next){
+    if(!this.isModified("password") || this.isNew){
+        return next();
+    }
+    this.passwordChangedAt = Date.now()
+    next()
+})
+
 UserSchema.methods.getJwtToken = async function (){
     return await jwt.sign({ id: this._id}, process.env.JWT_SECRET, {
-        expiresIn: "3000s"
+        expiresIn: process.env.JWT_COOKIE_EXPIRES
     })
 };
 
 UserSchema.methods.comparePassword = async function (candidate, savedPassword) {
     return await bcrypt.compare(candidate, savedPassword)
+}
+
+UserSchema.methods.createPasswordRestToken = function () {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+
+    this.forgotPasswordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex'); 
+
+    
+    this.forgotPasswordExpires = Date.now() + 10 * 60 * 1000;
+
+    return resetToken;
+    
 }
 
 module.exports = mongoose.model("user", UserSchema)

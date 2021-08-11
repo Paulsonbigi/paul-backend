@@ -3,6 +3,7 @@ const normalize = require("normalize-url");
 const multer = require("multer");
 const path = require("path");
 const ejs = require('ejs');
+const crypto = require("crypto")
 
 const User = require("../model/user")
 const AppError = require("../Error/appError");
@@ -20,12 +21,15 @@ const sendToken = async (user, res, statusCode) => {
         expires: new Date(Date.now() + 30 * 24 * 60 * 1000),
     };
     if(process.env.NODE_ENV === "production"){
+      // only on https else user won't be assigned any cookie
         cookieOption.secure = true;
     };
+    user.password =undefined;
 
     res.cookie("token", token, cookieOption).status(statusCode).json({
         success: true,
-        token
+        token,
+        user
     })
 }
 
@@ -70,7 +74,7 @@ exports.register = async (req, res, next) => {
               { forceHttps: true }
           );
 
-          const user = await User.create( req.body ) 
+          const user = await User.create({ firstName, lastName, email, phoneNumber, password, confirmPassword, image:avatar })
 
           const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL : process.env.PROD_URL;
           new Email(user, url).sendWelcome()
@@ -102,15 +106,6 @@ exports.login = catchAsync(async (req, res, next) => {
 
 
       const url = `${req.protocol}://${req.get('host')}/me`
-      // const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL : process.env.PROD_URL;
-      // const sendUserEmail = async () => {
-      //   transport.sendMail(mailOptions, (error, info) => {
-      //     if (error) {
-      //       return console.log(error);
-      //     }
-      //     console.log('Message sent: %s', info.messageId);
-      //   });
-      // }
       await new Email(user, url).sendWelcome()
       sendToken(user, res, 200);
       
@@ -140,22 +135,55 @@ exports.logout = async (req, res, next) => {
 //  @access public access
 exports.forgotPassword = async (req, res, next) => {
     try{
+      // get user based on posted email
       const { email } = req.body;
-    
-      // check of the email matches existing emails
-      const user = await User.findOne({ email }).select('+password')
-      if(!user) return next(new AppError('User does not exist', 400))
 
-      let token = await user.getJwtToken()
-      const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL+ `/forgot-password/reset/${token}` : process.env.PROD_URL + `/forgot-password/reset/${token}`;
-      await new sendEmail(user, url).passwordReset()
-  
-      sendToken(res, 200);
+      // check if user exists
+      const user = await User.findOne({email})
+        if(!user) return next(new AppError("User does not exit", 404 ))
+    
+      // generate random token
+      const resetToken = user.createPasswordRestToken()
+
+      await user.save({ validateBeforeSave: false })
+      const url = `${req.protocol}://${req.get('host')}/forgot-password/reset/${resetToken}`
+      // const url = process.env.NODE_ENV === "development" ? process.env.DEV_URL + `${resetToken}` : process.env.PROD_URL;
+
+      await new Email(user, url).passwordReset()
+      res.status(200).json({
+        success: true,
+        msg: "Password reset token has been sent to your email"
+      })
+
     }catch(err){
       next(new AppError(err.message, 404))
     }
   };
 
+// @Route POST request
+// @desc request for password change
+//  @access private access
+exports.resetPasword = async (req, res, next) => {
+  console.log(req.params.token)
+
+  const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
+
+  const user = await User.findOne({ forgotPasswordResetToken: hashedToken, forgotPasswordExpires: {$gt: Date.now()} })
+
+  // if user does not exist
+  if(!user) return next(new AppError("Token is invalid or has expired", 400))
+
+    user.password = req.body.password
+    user.confirmPassword = req.body.confirmPassword
+    user.forgotPasswordResetToken = undefined
+    user.forgotPasswordExpires = undefined
+
+    await user.save()
+
+    const token = sign
+
+    sendToken(user, res, 200);
+}
 // @Route POST request
 // @desc update password
 //  @access private access
