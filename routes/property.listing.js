@@ -30,7 +30,7 @@ router.get(`/listings/state/:slug`, getSelectedPropertyByState)
 router.post("/list", auth, authorize(roles),  ListProperty)
 
 // Updates Routes
-router.patch(`/update_property/:id`, auth, updateListedProperty)
+router.patch(`/update_property/:id`, auth, authorize(roles), updateListedProperty)
 
 // Delete Routes
 router.delete("/delete_a_property/:id", auth, authorize(roles), deleteAListedPropertyById)
