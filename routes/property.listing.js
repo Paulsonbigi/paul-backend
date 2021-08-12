@@ -16,7 +16,7 @@ const { ListProperty,
         getActiveListedProperties
     } = require("../controllers/property.listing")
 
-let roles = ["agent", "admin"]
+let roles = ["agent", "admin", "landlord"]
 
 // Get Routes
 router.get("/listings", getListedProperties)
@@ -27,7 +27,7 @@ router.get(`/listings/country/:slug`, getSelectedPropertyByCountry)
 router.get(`/listings/state/:slug`, getSelectedPropertyByState)
 
 // Post routes
-router.post("/list",  ListProperty)
+router.post("/list", auth, authorize(roles),  ListProperty)
 
 // Updates Routes
 router.patch(`/update_property/:id`, auth, updateListedProperty)

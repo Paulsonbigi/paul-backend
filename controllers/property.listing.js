@@ -25,8 +25,8 @@ exports.ListProperty = async (req, res, next) => {
 
         const newListing = propertyListing({ title, property_type, bedrooms, bathrooms, unit, land_mass, address, phone_number, author, country, state, city })
         await newListing.save()
-            res.status(200)
-            res.json({msg: 'Listing created successfully'})
+
+            res.status(200).json({msg: 'Listing created successfully'})
     } catch(err){
         next(new AppError(err.message, 404))
     }
@@ -68,8 +68,6 @@ exports.getListedProperty = async (req, res, next) => {
         const listedProperty = await propertyListing.findById(ObjectID(listingID))
             if(!listedProperty) return next(new AppError("Property not listed", 401))
 
-        
-
         sendData(listedProperty, res, 200)
 
     }catch(err){
@@ -92,9 +90,6 @@ exports.updateListedProperty = async (req, res, next) => {
                 msg: "Property updated successfully"
             })
         } )
-
-
-
     }catch(err){
       next(new AppError(err.message, 404))
     }
@@ -139,8 +134,6 @@ exports.getPaginatedProperties = async (req, res, next) => {
 
                 sendData(queriedProducts, res, 200)
             })
-
-
     } catch(err) {
         next(new AppError(err.message, 404))
     }
@@ -151,8 +144,6 @@ exports.getPaginatedProperties = async (req, res, next) => {
 // @access public access
 exports.getSelectedPropertyByTitle = async (req, res, next) => {
     try{
-
-
         if(!req.param) return next(new AppError("Enter a paramenter", 400))
         let searchTitle = req.params.slug
         
@@ -169,7 +160,6 @@ exports.getSelectedPropertyByTitle = async (req, res, next) => {
 // @access public access
 exports.getSelectedPropertyByNumberOfBathrooms = async (req, res, next) => {
     try{
-
         if(!req.param) return next(new AppError("Enter a paramenter", 400))
         let preferredBethrooms = req.params.slug
         
@@ -186,7 +176,6 @@ exports.getSelectedPropertyByNumberOfBathrooms = async (req, res, next) => {
 // @access public access
 exports.getSelectedPropertyByCountry = async (req, res, next) => {
     try{
-
         if(!req.param) return next(new AppError("Enter a paramenter", 400))
 
         let preferredCountry = req.param.country
