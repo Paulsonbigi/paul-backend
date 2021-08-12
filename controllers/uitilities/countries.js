@@ -71,7 +71,7 @@ exports.getStateCities = async (req, res, next) => {
       
       // console.log(availableStates)
       // sends thr cities to the user
-      sendData(availableStates, res, 200)
+      // sendData(availableStates, res, 200)
 
     }catch(err){
       next(new AppError(err.message, 404))
