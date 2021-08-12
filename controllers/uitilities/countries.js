@@ -1,6 +1,5 @@
 const Countries = require("../../utils/data")
 const AppError = require("../../Error/appError");
-const { values } = require("../../utils/data");
 
 const sendData = async (data, res, statusCode) => {
 

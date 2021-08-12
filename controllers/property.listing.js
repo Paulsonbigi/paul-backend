@@ -48,6 +48,19 @@ exports.getListedProperties = async (req, res, next) => {
 // @Route GET request
 // @desc request to get all available properties
 // @access public access
+exports.getActiveListedProperties = async (req, res, next) => {
+    try{
+        const AllListedPropeties = await propertyListing.find({ is_active: true })
+        sendData(AllListedPropeties, res, 200)
+
+    }catch(err){
+      next(new AppError(err.message, 404))
+    }
+}
+
+// @Route GET request
+// @desc request to get all available properties
+// @access public access
 exports.getListedProperty = async (req, res, next) => {
     try{
         let listingID = req.params.id

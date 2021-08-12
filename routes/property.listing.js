@@ -12,13 +12,15 @@ const { ListProperty,
         getSelectedPropertyByState,
         updateListedProperty,
         deleteAListedProperty,
-        deleteAListedPropertyById
+        deleteAListedPropertyById,
+        getActiveListedProperties
     } = require("../controllers/property.listing")
 
 let roles = ["agent", "admin"]
 
 // Get Routes
 router.get("/listings", getListedProperties)
+router.get(`/active_listing`, getActiveListedProperties)
 router.get(`/listing_property/:id`, auth, deleteAListedPropertyById)
 router.get(`/listings/selected`, getPaginatedProperties)
 router.get(`/listings/country/:slug`, getSelectedPropertyByCountry)

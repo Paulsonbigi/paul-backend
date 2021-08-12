@@ -10,7 +10,11 @@ const ListingSchema = new Schema({
     },
     is_active: {
         type: Boolean,
-        default: true
+        default: false
+    },
+    likes: {
+        type: Number, 
+        default: null
     },
     property_type: {
         type: String,

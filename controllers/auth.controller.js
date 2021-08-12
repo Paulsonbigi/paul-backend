@@ -208,7 +208,7 @@ exports.updatePassword = async (req, res, next) => {
 
 // @Route POST request
 // @desc update password
-//  @access public access
+//  @access private access
 exports.updateEmailRequest = async (req, res, next) => {
 
   try{
