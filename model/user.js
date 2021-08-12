@@ -44,7 +44,7 @@ const UserSchema = new Schema({
         default: 0
     },
     confirmed: {
-        type: Boolean,
+        type: String,
         enum: ["pending", "deactivated", "confirmed"],
         default: "pending"
     },
