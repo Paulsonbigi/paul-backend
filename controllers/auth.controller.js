@@ -33,28 +33,28 @@ const sendToken = async (user, res, statusCode) => {
     })
 }
 
+const upload = multer({ dest: '../utils/uploads' })
+// var Storage = multer.diskStorage({
+//   destination: function(req, file, callback) {
+//     callback(null, path.join(__dirname, "./utils/uploads/"));
+//   },
+//   filename: function(req, file, callback) {
+//     callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+//   }
+// });
+// const upload = multer({
+//   storage: Storage,
+//   limits: {
+//     fileSize: 3000000
+//   },
+//   fileFilter(req, file, cb) {
+//     if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+//       return cb(new Error("Please upload an image "));
+//     }
 
-var Storage = multer.diskStorage({
-  destination: function(req, file, callback) {
-    callback(null, path.join(__dirname, "./utils/uploads/"));
-  },
-  filename: function(req, file, callback) {
-    callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
-  }
-});
-const upload = multer({
-  storage: Storage,
-  limits: {
-    fileSize: 3000000
-  },
-  fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      return cb(new Error("Please upload an image "));
-    }
-
-    cb(undefined, true);
-  }
-});
+//     cb(undefined, true);
+//   }
+// });
 
 
 // @Route POST A USER

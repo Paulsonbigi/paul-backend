@@ -1,5 +1,8 @@
 const User = require('../model/user');
 const AppError = require('../Error/appError');
+const multer = require("multer");
+
+const upload = multer({ dest: '../utils/uploads' })
 
 // @Route GET request
 // @desc request to get authenticated user details
@@ -28,6 +31,17 @@ exports.getAllUsers = async (req, res, next) => {
         data: user
       })
 
+  } catch(err){
+    next(new AppError(err.message, 404))
+  }
+}
+
+// @Route GET request
+// @desc request to get authenticated user details restricted to admin only
+//  @access private access
+exports.uploadProfilePicture = async (req, res, next) => {
+  try{
+    // const 
   } catch(err){
     next(new AppError(err.message, 404))
   }
