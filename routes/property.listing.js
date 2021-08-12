@@ -27,7 +27,7 @@ router.get(`/listings/country/:slug`, getSelectedPropertyByCountry)
 router.get(`/listings/state/:slug`, getSelectedPropertyByState)
 
 // Post routes
-router.post("/list", auth, authorize(roles),  ListProperty)
+router.post("/list",  ListProperty)
 
 // Updates Routes
 router.patch(`/update_property/:id`, auth, updateListedProperty)
