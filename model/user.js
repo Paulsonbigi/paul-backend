@@ -35,6 +35,19 @@ const UserSchema = new Schema({
         enum: ['user', "admin", "agent", "landlord"],
         default: "user"
     },
+    is_active: {
+        type: Boolean,
+        default: true
+    },
+    rating: {
+        type: Number,
+        default: 0
+    },
+    confirmed: {
+        type: Boolean,
+        enum: ["pending", "deactivated", "confirmed"],
+        default: "pending"
+    },
     password: {
         type: String,
         minLength: 6,

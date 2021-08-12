@@ -92,7 +92,16 @@ exports.updateListedProperty = async (req, res, next) => {
 // @access public access
 exports.deleteAListedPropertyById = async (req, res, next) => {
     try{
+        let listingID = req.params.id 
+        
+        const propertyForUpdate = await propertyListing.findByIdAndDelete( ObjectID(listingID), req.body, { new: true}, (err, data) =>{
+            if(err) return next(new AppError("Unknown request", 401))
 
+            res.status(200).json({
+                success: true,
+                msg: "Property deleted successfully"
+            })
+        } )
     } catch(err){
         next(new AppError(err.message, 404))
     }

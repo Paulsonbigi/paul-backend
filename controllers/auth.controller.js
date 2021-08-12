@@ -247,7 +247,7 @@ exports.updateEmail = async (req, res, next) => {
     
     await res.status(200).json({
       succes: true,
-      msg: "An email reset token has been sent to this email"
+      msg: "Reset token has been sent to this email"
     })
   } catch(err){
       next(new AppError(err.message, 404))

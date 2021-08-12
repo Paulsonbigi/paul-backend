@@ -26,6 +26,10 @@ const PaymentSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  confirmationStatus: {
+    type: Boolean,
+    default: false
   }
 });
 

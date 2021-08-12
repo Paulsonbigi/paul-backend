@@ -8,6 +8,10 @@ const ListingSchema = new Schema({
         type: String,
         required: [true, "Title field is required"]
     },
+    is_active: {
+        type: Boolean,
+        default: true
+    },
     property_type: {
         type: String,
         required: [true, "Property type field is required"]

@@ -31,6 +31,6 @@ router.post("/list", auth, authorize(roles),  ListProperty)
 router.patch(`/update_property/:id`, auth, updateListedProperty)
 
 // Delete Routes
-router.delete(`/update_property/:id`, auth, authorize(roles), deleteAListedProperty)
+router.delete("/delete_a_property/:id", auth, authorize(roles), deleteAListedPropertyById)
 
 module.exports = router
