@@ -4,6 +4,17 @@ const multer = require("multer");
 
 const upload = multer({ dest: '../utils/uploads' })
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '../utils/uploads')
+  },
+  filename: function (req, file, cb) {
+    const ext = file.mimetype.split("/")[1]
+    cb(null, `user-${}` + '-' + ext)
+  }
+})
+
+
 // @Route GET request
 // @desc request to get authenticated user details
 //  @access private access
@@ -41,6 +52,9 @@ exports.getAllUsers = async (req, res, next) => {
 //  @access private access
 exports.uploadProfilePicture = async (req, res, next) => {
   try{
+
+    console.log(req.body)
+    console.log(req.file)
     // const 
   } catch(err){
     next(new AppError(err.message, 404))
