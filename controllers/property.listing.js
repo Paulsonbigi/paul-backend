@@ -34,11 +34,15 @@ exports.ListProperty = async (req, res, next) => {
 }
 
 // @Route GET request
-// @desc request to get all available properties
+// @desc request to get all available properties and also filters the other data
 // @access public access
 exports.getListedProperties = async (req, res, next) => {
     try{
-        const AllListedPropeties = await propertyListing.find(req.query)
+        const queryObj = {...req.query}
+        const excludedFields = ['page', 'sort', 'limit', 'fields'];
+        excludedFields.forEach(el => delete queryObj[el])
+
+        const AllListedPropeties = await propertyListing.find(queryObj)
         if(AllListedPropeties.length === 0) return next(new AppError("Not available", 400))
         sendData(AllListedPropeties, res, 200)
 
