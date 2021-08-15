@@ -17,6 +17,7 @@ const sendData = async (data, res, statusCode) => {
 //  @access private access
 exports.ListProperty = async (req, res, next) => {
     
+    
     try{
         const { title, property_type, bedrooms, bathrooms, unit, land_mass, address, phone_number, author, city, state, country } = req.body
         
@@ -37,7 +38,8 @@ exports.ListProperty = async (req, res, next) => {
 // @access public access
 exports.getListedProperties = async (req, res, next) => {
     try{
-        const AllListedPropeties = await propertyListing.find()
+        const AllListedPropeties = await propertyListing.find(req.query)
+        if(AllListedPropeties.length === 0) return next(new AppError("Not available", 400))
         sendData(AllListedPropeties, res, 200)
 
     }catch(err){
@@ -138,69 +140,3 @@ exports.getPaginatedProperties = async (req, res, next) => {
         next(new AppError(err.message, 404))
     }
 }
-
-// @Route GET request
-// @desc request to get a with different query parameters
-// @access public access
-exports.getSelectedPropertyByTitle = async (req, res, next) => {
-    try{
-        if(!req.param) return next(new AppError("Enter a paramenter", 400))
-        let searchTitle = req.params.slug
-        
-        const AllListedPropeties = await propertyListing.find({ title: searchTitle })
-        sendData(AllListedPropeties, res, 200)
-
-    } catch(err) {
-        next(new AppError(err.message, 404))
-    }
-}
-
-// @Route GET request
-// @desc request to get a with different query parameters
-// @access public access
-exports.getSelectedPropertyByNumberOfBathrooms = async (req, res, next) => {
-    try{
-        if(!req.param) return next(new AppError("Enter a paramenter", 400))
-        let preferredBethrooms = req.params.slug
-        
-        const AllListedPropeties = await propertyListing.find({ bathrooms: preferredBethrooms })
-        sendData(AllListedPropeties, res, 200)
-
-    } catch(err) {
-        next(new AppError(err.message, 404))
-    }
-}
-
-// @Route GET request
-// @desc request to get a with different query parameters
-// @access public access
-exports.getSelectedPropertyByCountry = async (req, res, next) => {
-    try{
-        if(!req.param) return next(new AppError("Enter a paramenter", 400))
-
-        let preferredCountry = req.param.country
-        
-        const AllListedPropeties = await propertyListing.find({ country: preferredCountry})
-        sendData(AllListedPropeties, res, 200)
-
-    } catch(err) {
-        next(new AppError(err.message, 404))
-    }
-}
-
-// @Route GET request
-// @desc request to get a with different query parameters
-// @access public access
-exports.getSelectedPropertyByState = async (req, res, next) => {
-    try{
-        if(!req.param) return next(new AppError("Enter a paramenter", 400))
-        let preferredState = req.params.slug
-        
-        const AllListedPropeties = await propertyListing.find({ state: preferredState })
-        sendData(AllListedPropeties, res, 200)
-
-    } catch(err) {
-        next(new AppError(err.message, 404))
-    }
-}
-

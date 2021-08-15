@@ -6,10 +6,6 @@ const {authorize} = require("../middleware/resrict")
 
 const { ListProperty, 
         getListedProperties, 
-        getPaginatedProperties, 
-        getSelectedPropertyByTitle, 
-        getSelectedPropertyByCountry, 
-        getSelectedPropertyByState,
         updateListedProperty,
         deleteAListedProperty,
         deleteAListedPropertyById,
@@ -22,9 +18,6 @@ let roles = ["agent", "admin", "landlord"]
 router.get("/listings", getListedProperties)
 router.get(`/active_listing`, getActiveListedProperties)
 router.get(`/listing_property/:id`, auth, deleteAListedPropertyById)
-router.get(`/listings/selected`, getPaginatedProperties)
-router.get(`/listings/country/:slug`, getSelectedPropertyByCountry)
-router.get(`/listings/state/:slug`, getSelectedPropertyByState)
 
 // Post routes
 router.post("/list", auth, authorize(roles),  ListProperty)
