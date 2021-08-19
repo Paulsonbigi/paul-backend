@@ -15,9 +15,9 @@ const { ListProperty,
 let roles = ["agent", "admin", "landlord"]
 
 // Get Routes
-router.get("/listings", getListedProperties)
+router.get("/", getListedProperties)
 router.get(`/active_listing`, getActiveListedProperties)
-router.get(`/listing_property/:id`, auth, deleteAListedPropertyById)
+router.get(`/:id`, auth, deleteAListedPropertyById)
 
 // Post routes
 router.post("/list", auth, authorize(roles),  ListProperty)

@@ -7,6 +7,7 @@ const authRoute = require('./routes/auth');
 const userRoute = require('./routes/user');
 const listingRoute = require('./routes/property.listing');
 const placesRoute = require('./routes/countries');
+const paymentsRoute = require('./routes/payment');
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet"); 
 const mongoSanitize = require('express-mongo-sanitize');
@@ -49,6 +50,7 @@ app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/property_listing', listingRoute);
 app.use('/api/v1/places', placesRoute);
+app.use('/api/v1/payment', paymentsRoute);
 app.use(globalError);
 app.all("*", (req, res, next) => {
     res.status(404).json({

@@ -3,6 +3,7 @@ const AppError = require("../Error/appError");
 const propertyListing = require("../model/property_listing");
 const queryString = require("query-string");
 const { MongoClient, ObjectID } = require("mongodb");
+const ApiFeatures = require("../utils/apiFeatures");
 
 // custom response
 const sendData = async (data, res, statusCode) => {
@@ -11,6 +12,8 @@ const sendData = async (data, res, statusCode) => {
     data,
   });
 };
+
+// Api query class
 
 // @Route POST request
 // @desc request to list a property
@@ -81,29 +84,34 @@ exports.getListedProperties = async (req, res, next) => {
       const sortBy = req.query.sort.split(",").join(" ");
       queriedPropeties = queriedPropeties.sort(sortBy);
     } else {
-        queriedPropeties = queriedPropeties.sort('-bedrooms')
+      queriedPropeties = queriedPropeties.sort("-bedrooms");
     }
 
     // field limiting to be sent to the user (projecting)
-    if(req.query.fields){
-        const fields = req.query.fields.split(',').join(' ')
-        queriedPropeties = queriedPropeties.select(fields)
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      queriedPropeties = queriedPropeties.select(fields);
     } else {
-        queriedPropeties = queriedPropeties.select('-__v')
+      queriedPropeties = queriedPropeties.select("-__v");
     }
 
     // pagination
-    let limit = req.query.limit * 1 || 10
-    let page = req.query.page * 1 || 1
-    let skip = (limit - 1) * page
-    queriedPropeties = queriedPropeties.skip(skip).limit(limit)
-    if (queriedPropeties.length < 1) return next(new AppError("Page doesn't not exist"))
+    let limit = req.query.limit * 1 || 10;
+    let page = req.query.page * 1 || 1;
+    let skip = (page - 1) * limit;
+    queriedPropeties = queriedPropeties.skip(skip).limit(limit);
+    if (queriedPropeties.length === 0)
+      return next(new AppError("Page doesn't not exist"));
+    
+    // const AllListedPropeties = new ApiFeatures(propertyListing.find(), req.query)
+      // .filter()
+      // .sorting()
+      // .limiting()
+      // .pagination();
+    // // if (AllListedPropeties.length === 0) return next(new AppError("Property not available", 400));
+    // const doc = await AllListedPropeties.query
 
-    const AllListedPropeties = await queriedPropeties;
-    if (AllListedPropeties.length === 0)
-      return next(new AppError("Property not available", 400));
-
-    sendData(AllListedPropeties, res, 200);
+    sendData(queriedPropeties, res, 200);
   } catch (err) {
     next(new AppError(err.message, 404));
   }
@@ -186,4 +194,3 @@ exports.deleteAListedPropertyById = async (req, res, next) => {
     next(new AppError(err.message, 404));
   }
 };
-

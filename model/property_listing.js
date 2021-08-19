@@ -77,6 +77,10 @@ const ListingSchema = new Schema({
         type: Array,
         data: Buffer
     },
+    price: {
+        type: Number,
+        required: [true, "Price is required"]
+    },
     location: {
         type: {
           type: String, 
