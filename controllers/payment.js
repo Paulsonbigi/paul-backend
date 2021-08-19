@@ -8,7 +8,7 @@ exports.getCheckOutSession = async (req, res, next) => {
         // get the ID of the property
         const property = await propertyListing.findById(req.params.propertyID)
         // create a checkout session
-        const session = await stripe.getCheckOutSession.getCheckOutSession.create({
+        const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             success_url: `${req.protocol}://${req.get('host')}/`,
             cancel_url: `${req.protocol}://${req.get('host')}/property/${property.slug}`,
